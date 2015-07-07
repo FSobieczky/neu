@@ -1,0 +1,59 @@
+* * *   neu.c   * * *
+
+neu.c is a c program (compiles with gcc neu.c -lm -o neu or `make') which takes
+a ASCII-PGM File without comment line (the second line may not contain `# ...')
+and a few arguments to produce a pgm file with patches highlighting `unusual'
+objects. It is meant to be used for satellite image data.
+
+ *  Purpose: pointing out 'untypical' features in digital image
+ *           Useful for narrowing down large amount of image data in pattern search
+ *  Method : Divide Image in Blocks N_x times N_y, look only at specific range of bits, then:
+ *           a.) count changes of greyvalues between neighboring pixels
+ *           b.) List the M most interesting such Blocks
+ *           
+ *  Input  : digital image in the ASCII-PGM Format
+ *  Output : List of M most `unusual' M blocks in form of little PGM-files, stored
+ *           in directory called `PICTURES' 
+ *           and picture called file_orig.png   where `file' is the input filename.
+ *           The program displays this file automatically (using the linux command`display').
+ *           If the -v or -V option is invocted, then the bitplane picture is shown.
+ *           -V ONLY shows this bitplane picture, and does nothing else.
+ *
+ *  Usage  : neu <file> <N_x> <N_y> <begbit> <endbit> [number of results (default:30)] [-v|-V]
+ *  Help   : 'neu' (without arguments) explains usage
+ *           'neu -h' gives long help.
+ * 
+ *  Architecture :  main() includes (mainly): init_pixels(), init_regions(), main_loop()
+ *                    -- main_loop() finally calls picturize_regions() (last part of code).
+
+
+1.) Download all the files from this directory into a working directory.
+2.) mkdir REGIONS     This is the directory where the bitplane blocks are stored (ASCII-PGM)
+3.) mkdir PICTURES    This is the directory where the original blocks are stored (ASCII-PGM)
+4.) mkdir PNG         This is the directory where the original blocks are stored (PNG)
+    Also create a directory called `trash' in each of these three diectories.
+5.) make    and   compile bin2a.c with `gcc bin2a.c -lm -o b2a'
+6.) Use `setup' to cut out a small picture of e.g. 200 by 200 pixels from a large TIF file.
+    (it is a script - run it by making it executable, and by passing the necessary arguments)
+7.) Have 'sxiv' installed. It's a standard image viewer, with a 'vizual schnauzer' 
+    (views all pictures in directory)
+8.) Run: `neu 13a.PGM 10 10 2 3 20 -v'  uses ASCII-PGM file 13a.PGM and divides into 10 by 10 blocks,
+          and uses only bitplane 2 and 3, producing output of the 20 most interesting blocks
+          as files in PICTURES. Also produced:  13a_orig.png   This has the highlighted patches.
+9.) Use `./show' (which contains only: `sxiv PICTURES/* &') to look at blocks as separate files
+10.) Use `./inspect' to look at bitplane blocks.  `./clean' moves everything into the trash bins
+    inside PICTURES, REGIONS and PNG.
+
+
+Notes:
+
+To use the 2nd to 3rd bitplane has proven to give the best results.
+
+The file `res_10_20_30_blurred_unblurred.png' illustrates the
+usefulness of the selective gaussian blurr in `setup'. In the
+lower row, this blurr wasn't done. Effect: Lots of little crap,
+which is filtered out by this blurr. Upper row shows that this
+way, features are discovered, which are not without the blurr.
+So, when using `setup' to produce the PGM file, the blurr is
+done automatically. `setup' also takes care of removing the
+usual commandline in the PGM file.

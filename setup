@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# This transforms a depth 8 TIF image into an excerpt in ascii-PGM format without comment-line
+# as needed by 'neu'.  
+# Input: 
+#   First argument : Name of the .TIF file without .TIF -ending
+#   Second to Fifth argument: Top Left Bottom Right    of margins to be removed.
+#     (Example: 'setup 13a 5000 5000 5000 5000'  will produce a 134 by 135 (WidthxLength) 
+#                picture called 13a.PGM for '13a.TIF' (Note: The TIF image is 10134 x 10135 x 8-Bit.)
+
+tiffcrop -U px -m $2,$3,$4,$5 $1.TIF small.TIF
+
+echo 'small.TIF produced'
+
+tifftopnm small.TIF > small.PGM
+
+echo 'small.PGM produced'
+
+pnmtoplainpnm small.PGM > smalla.PGM
+
+echo 'Plain PGM (ASCII)  smalla.PGM  produced'
+
+./smooth smalla.PGM $6 $7 smallb.PGM
+
+# Used to be: convert small.PGM -selective-blur 0x$6+$7% smallb.PGM
+
+echo 'Blurring achieved - smallb.PGM produced'
+
+#sed '2d' smalla.PGM > $1_$2_$3.PGM
+
+#echo 'comment line removed'
+
+cp smallb.PGM $1_X.$3_Y.$2_t.$6_s.$7.PGM
+
+display $1_X.$3_Y.$2_t.$6_s.$7.PGM &
+

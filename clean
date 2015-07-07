@@ -1,0 +1,5 @@
+mv PICTURES/reg* PICTURES/trash
+mv REGIONS/reg* REGIONS/trash
+mv PNG/reg* PNG/trash
+
+

@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# This transforms a depth 8 TIF image into an excerpt in ascii-PGM format without comment-line
+# as needed by 'neu'.  
+# Input: 
+#   First argument : Name of the .TIF file without .TIF -ending
+#   Second to Fifth argument: Top Left Bottom Right    of margins to be removed.
+#     (Example: 'setup 13a 5000 5000 5000 5000'  will produce a 134 by 135 (WidthxLength) 
+#               picture called 13a.PGM for '13a.TIF' (Note: The TIF image is 10134 x 10135 x 8-Bit.)
+#
+#  -- This is the same as `setup' except that it also makes a call to ./neu, i.e. runs `neu'.
+#     Other versions of `perform' exist, differing only in the size of the windows into which
+#     the PGM file is chopped: here it is 12 x 12 (see last line).
+
+tiffcrop -U px -m $2,$3,$4,$5 $1.TIF small.TIF
+
+echo 'small.TIF produced'
+
+tifftopnm small.TIF > small.PGM
+
+echo 'small.PGM produced'
+
+convert small.PGM -selective-blur 3x4+10% smallb.PGM
+
+echo 'Blurring achieved - smallb.PGM produced'
+
+./b2a smallb.PGM smalla.PGM
+
+echo 'ascii PGM file produced'
+
+sed '2d' smalla.PGM > $1_$2_$3.PGM
+
+echo 'comment line removed'
+
+#display $1_$2_$3.PGM &
+
+./neu $1_$2_$3.PGM 12 12 2 3
+
