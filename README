@@ -46,6 +46,7 @@ objects. It is meant to be used for satellite image data.
 
 
 Notes:
+------
 
 To use the 2nd to 3rd bitplane has proven to give the best results.
 
@@ -57,3 +58,9 @@ way, features are discovered, which are not without the blurr.
 So, when using `setup' to produce the PGM file, the blurr is
 done automatically. `setup' also takes care of removing the
 usual commandline in the PGM file.
+
+For a presentation using this software, see
+
+http://www.datascienceassn.org/content/scale-space-theory-florian-sobieczky-slides
+
+The file 13a.pgm is an excerpt of a file owned by DigitalGlobe.
